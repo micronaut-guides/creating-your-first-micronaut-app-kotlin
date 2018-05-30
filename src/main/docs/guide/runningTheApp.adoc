@@ -1,1 +1,12 @@
+Before running the Application, adapt the in `build.gradle` the 
+
+[source,groovy]
+.build.gradle
+----
+...
+mainClassName = "example.micronaut.Application"
+...
+----
+
+
 include::{commondir}/common-runapp.adoc[]
