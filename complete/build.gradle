@@ -45,14 +45,15 @@ repositories {
     //tag::repositories-kotlingradle[]
     maven { url "http://dl.bintray.com/jetbrains/spek" }
     //end::repositories-kotlingradle[]
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "https://jcenter.bintray.com" }
 }
 
 dependencyManagement {
     imports {
-        mavenBom 'io.micronaut:bom:1.0.0-SNAPSHOT'
+        mavenBom 'io.micronaut:bom:1.0.0.M1'
     }
 }
+
 
 dependencies {
     annotationProcessor "io.micronaut:inject-java"
