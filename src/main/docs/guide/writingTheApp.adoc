@@ -1,3 +1,5 @@
 include::{commondir}/common-create-app-kotlin.adoc[]
 
 include::{commondir}/common-annotationprocessors.adoc[]
+
+include::{commondir}/commmon-kotlinkaptinteillj.adoc[]
