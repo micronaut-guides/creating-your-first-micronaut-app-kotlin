@@ -50,7 +50,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom 'io.micronaut:bom:1.0.0.M1'
+        mavenBom 'io.micronaut:bom:1.0.0.M2'
     }
 }
 
@@ -79,9 +79,8 @@ shadowJar {
 }
 
 mainClassName = "example.micronaut.Application"
-compileJava.options.compilerArgs += '-parameters'
-compileTestJava.options.compilerArgs += '-parameters'
 
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
 
 //tag::test-kotlingradle[]
 test {
@@ -90,9 +89,16 @@ test {
 //end::test-kotlingradle[]
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions {
+        jvmTarget = '1.8'
+        //Will retain parameter names for Java reflection
+        javaParameters = true
+    }
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions {
+        jvmTarget = '1.8'
+        javaParameters = true
+    }
 }
