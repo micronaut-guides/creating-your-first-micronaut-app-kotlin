@@ -6,7 +6,7 @@ import io.micronaut.runtime.server.EmbeddedServer
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.on
-import org.junit.Assert.assertEquals
+import org.junit.jupiter.api.Assertions.assertEquals
 
 class HomeControllerSpec: Spek({
     describe("HelloController") {

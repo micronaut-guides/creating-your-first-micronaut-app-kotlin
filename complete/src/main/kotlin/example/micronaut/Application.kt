@@ -7,7 +7,7 @@ object Application {
     @JvmStatic
     fun main(args: Array<String>) {
         Micronaut.build()
-                .packages("example")
+                .packages("example.micronaut")
                 .mainClass(Application.javaClass)
                 .start()
     }

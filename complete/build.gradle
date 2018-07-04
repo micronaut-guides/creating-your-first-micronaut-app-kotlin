@@ -54,7 +54,6 @@ dependencyManagement {
     }
 }
 
-
 dependencies {
     annotationProcessor "io.micronaut:inject-java"
     compile "io.micronaut:http-client"
@@ -65,13 +64,15 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
     compileOnly "io.micronaut:inject-java"
     kapt "io.micronaut:inject-java"
+    kaptTest "io.micronaut:inject-java"
     runtime "ch.qos.logback:logback-classic:1.2.3"
-    testCompile "junit:junit:4.12"
-    testCompile "io.micronaut:inject-java"
+    testCompile "org.junit.jupiter:junit-jupiter-api:5.1.0"
     //tag::dependencies-kotlingradle[]
     testCompile 'org.jetbrains.spek:spek-api:1.1.5'
-    testRuntime 'org.jetbrains.spek:spek-junit-platform-engine:1.1.5'
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.1.0"
     //end::dependencies-kotlingradle[]
+
+    testRuntime "org.jetbrains.spek:spek-junit-platform-engine:1.1.5"
 }
 
 shadowJar {
