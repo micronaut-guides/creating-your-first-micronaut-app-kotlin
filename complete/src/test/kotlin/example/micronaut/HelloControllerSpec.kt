@@ -9,8 +9,8 @@ import kotlin.test.assertEquals
 
 object BooksControllerSpec: Spek({
     describe("BookController Suite") {
-        var embeddedServer : EmbeddedServer = ApplicationContext.run(EmbeddedServer::class.java)
-        var client : HttpClient = HttpClient.create(embeddedServer.url)
+        var embeddedServer : EmbeddedServer = ApplicationContext.run(EmbeddedServer::class.java) // <1>
+        var client : HttpClient = HttpClient.create(embeddedServer.url) // <2>
 
         it("test /hello responds Hello World") {
             var rsp : String = client.toBlocking().retrieve("/hello")
