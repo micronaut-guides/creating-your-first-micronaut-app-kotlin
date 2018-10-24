@@ -7,8 +7,8 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 
-object BooksControllerSpec: Spek({
-    describe("BookController Suite") {
+object HelloControllerSpec: Spek({
+    describe("HelloController Suite") {
         var embeddedServer : EmbeddedServer = ApplicationContext.run(EmbeddedServer::class.java) // <1>
         var client : HttpClient = HttpClient.create(embeddedServer.url) // <2>
 
