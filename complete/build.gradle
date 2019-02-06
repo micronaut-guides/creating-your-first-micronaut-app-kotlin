@@ -30,6 +30,7 @@ repositories {
     //tag::spekrepository[]
     maven { url "https://dl.bintray.com/spekframework/spek-dev" }
     //end::spekrepository[]
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencyManagement {
