@@ -1,4 +1,4 @@
-Remove the `Application.java` created by the `mn create-app --features kotlin` command.
+Remove the `Application.java` created by the `mn create-app --lang kotlin` command.
 
 Create a Kotlin file instead which is used when running the application via Gradle or via deployment. You can also run the main class directly within your IDE if it is configured correctly.
 
