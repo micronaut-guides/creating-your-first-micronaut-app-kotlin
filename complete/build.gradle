@@ -1,78 +1,64 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
-    dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE"
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.15"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-    }
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.3.50"
+    id "org.jetbrains.kotlin.kapt" version "1.3.50"
+    id "org.jetbrains.kotlin.plugin.allopen" version "1.3.50"
+    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "application"
 }
+
+
 
 version "0.1"
 group "examples"
 
-apply plugin:"io.spring.dependency-management"
-apply plugin:"com.github.johnrengelman.shadow"
-apply plugin:"application"
-apply plugin:"java"
-apply plugin:"net.ltgt.apt-eclipse"
-apply plugin:"net.ltgt.apt-idea"
-apply plugin:"kotlin"
-apply plugin:"kotlin-kapt"
-
 repositories {
-    mavenLocal()
     mavenCentral()
-    maven { url "https://jcenter.bintray.com" }
-    //tag::spekrepository[]
-    maven { url "https://dl.bintray.com/spekframework/spek-dev" }
-    //end::spekrepository[]
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    jcenter()
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "io.micronaut:micronaut-bom:$micronautVersion"
-    }
+configurations {
+    // for dependencies that are needed for development only
+    developmentOnly
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-    compile "io.micronaut:micronaut-runtime"
-    compile "io.micronaut:micronaut-http-client"
-    compile "io.micronaut:micronaut-http-server-netty"
+    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
+    implementation "io.micronaut:micronaut-runtime"
+    implementation "io.micronaut:micronaut-http-client"
+    implementation "io.micronaut:micronaut-http-server-netty"
+    implementation "javax.annotation:javax.annotation-api"
+    kapt platform("io.micronaut:micronaut-bom:$micronautVersion")
     kapt "io.micronaut:micronaut-inject-java"
+    kapt "io.micronaut:micronaut-validation"
+    kaptTest platform("io.micronaut:micronaut-bom:$micronautVersion")
     kaptTest "io.micronaut:micronaut-inject-java"
-    runtime "ch.qos.logback:logback-classic:1.2.3"
-    runtime "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4.1"
-
+    runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8"
+    runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
+    testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    testImplementation "io.micronaut.test:micronaut-test-kotlintest"
+    testImplementation "io.mockk:mockk:1.9.3"
+    testImplementation "io.kotlintest:kotlintest-runner-junit5:3.3.2"
     //tag::spek[]
-    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
-    testImplementation "org.spekframework.spek2:spek-dsl-jvm:$spekVersion"
-    testRuntimeOnly "org.spekframework.spek2:spek-runner-junit5:$spekVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation "org.jetbrains.spek:spek-api:1.1.5"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    testRuntimeOnly "org.jetbrains.spek:spek-junit-platform-engine:1.1.5"
     //end::spek[]
 }
 
-shadowJar {
-    mergeServiceFiles()
-}
+test.classpath += configurations.developmentOnly
 
 mainClassName = "example.micronaut.Application"
 
-run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
-
-
-//tag::junitplatform[]
 test {
-    useJUnitPlatform {
-        includeEngines 'spek2'
-    }
+    useJUnitPlatform()
 }
-//end::junitplatform[]
+
+allOpen {
+    annotation("io.micronaut.aop.Around")
+}
 
 compileKotlin {
     kotlinOptions {
@@ -88,3 +74,10 @@ compileTestKotlin {
         javaParameters = true
     }
 }
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.classpath += configurations.developmentOnly
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
