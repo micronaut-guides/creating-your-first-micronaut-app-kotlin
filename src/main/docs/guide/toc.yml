@@ -9,3 +9,5 @@ testingTheApp:
   title: Testing the Application
 runningTheApp:
   title: Running the Application
+help:
+  title: Help with Micronaut  
