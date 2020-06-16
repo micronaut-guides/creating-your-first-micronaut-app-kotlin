@@ -9,10 +9,9 @@ plugins {
 version "0.1"
 group "example.micronaut"
 
-
 repositories {
+    mavenCentral()
     jcenter()
-    maven { url "https://oss.jfrog.org/oss-snapshot-local" }
 }
 
 configurations {
@@ -21,10 +20,10 @@ configurations {
 }
 
 dependencies {
-    kapt(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
+    kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kapt("io.micronaut:micronaut-inject-java")
     kapt("io.micronaut:micronaut-validation")
-    implementation(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
+    implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     implementation("io.micronaut:micronaut-inject")
     implementation("io.micronaut:micronaut-validation")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
@@ -35,25 +34,12 @@ dependencies {
     implementation("io.micronaut:micronaut-http-client")
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
-    kaptTest(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
+    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
-    testImplementation(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
-    testImplementation("io.micronaut.test:micronaut-test-kotlintest")
-    testImplementation("io.mockk:mockk:1.9.3")
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.2")
-
-    //tag::spek[]
-    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
-    testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion") {
-        exclude group: 'org.jetbrains.kotlin'
-    }
-    testRuntimeOnly ("org.spekframework.spek2:spek-runner-junit5:$spekVersion") {
-        exclude group: 'org.junit.platform'
-        exclude group: 'org.jetbrains.kotlin'
-    }
-    testRuntimeOnly "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-    //end::spek[]
-
+    testImplementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("io.micronaut.test:micronaut-test-junit5")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
 test.classpath += configurations.developmentOnly
@@ -101,6 +87,13 @@ shadowJar {
 tasks.withType(JavaExec) {
     classpath += configurations.developmentOnly
     jvmArgs('-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+    if (gradle.startParameter.continuous) {
+        systemProperties(
+            'micronaut.io.watch.restart':'true',
+            'micronaut.io.watch.enabled':'true',
+            "micronaut.io.watch.paths":"src/main"
+        )
+    }
 }
 
 
