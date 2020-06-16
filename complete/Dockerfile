@@ -1,4 +1,4 @@
-FROM java:openjdk-8u111-alpine
-RUN apk --no-cache add curl
-COPY build/libs/*-all.jar foo.jar
-CMD java ${JAVA_OPTS} -jar foo.jar
+FROM openjdk:14-alpine
+COPY build/libs/complete-*-all.jar complete.jar
+EXPOSE 8080
+CMD ["java", "-Dcom.sun.management.jmxremote", "-Xmx128m", "-jar", "complete.jar"]

@@ -1,15 +1,13 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.3.50"
-    id "org.jetbrains.kotlin.kapt" version "1.3.50"
-    id "org.jetbrains.kotlin.plugin.allopen" version "1.3.50"
-    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "org.jetbrains.kotlin.jvm" version "1.3.72"
+    id "org.jetbrains.kotlin.kapt" version "1.3.72"
+    id "org.jetbrains.kotlin.plugin.allopen" version "1.3.72"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
     id "application"
 }
 
-
-
 version "0.1"
-group "examples"
+group "example.micronaut"
 
 repositories {
     mavenCentral()
@@ -22,50 +20,44 @@ configurations {
 }
 
 dependencies {
-    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
-    implementation "io.micronaut:micronaut-runtime"
-    implementation "io.micronaut:micronaut-http-client"
-    implementation "io.micronaut:micronaut-http-server-netty"
-    implementation "javax.annotation:javax.annotation-api"
-    kapt platform("io.micronaut:micronaut-bom:$micronautVersion")
-    kapt "io.micronaut:micronaut-inject-java"
-    kapt "io.micronaut:micronaut-validation"
-    kaptTest platform("io.micronaut:micronaut-bom:$micronautVersion")
-    kaptTest "io.micronaut:micronaut-inject-java"
-    runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8"
-    runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
-    testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
-    testImplementation "io.mockk:mockk:1.9.3"
-    testImplementation "org.junit.jupiter:junit-jupiter-api"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
-
-    //tag::spek[]
-    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
-    testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion") {
-        exclude group: 'org.jetbrains.kotlin'
-    }
-    testRuntimeOnly ("org.spekframework.spek2:spek-runner-junit5:$spekVersion") {
-        exclude group: 'org.junit.platform'
-        exclude group: 'org.jetbrains.kotlin'
-    }
-    testRuntimeOnly "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-    //end::spek[]
+    kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    kapt("io.micronaut:micronaut-inject-java")
+    kapt("io.micronaut:micronaut-validation")
+    implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    implementation("io.micronaut:micronaut-inject")
+    implementation("io.micronaut:micronaut-validation")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
+    implementation("io.micronaut:micronaut-runtime")
+    implementation("io.micronaut:micronaut-http-server-netty")
+    implementation("io.micronaut:micronaut-http-client")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    kaptTest("io.micronaut:micronaut-inject-java")
+    testImplementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("io.micronaut.test:micronaut-test-junit5")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
 test.classpath += configurations.developmentOnly
 
-mainClassName = "example.micronaut.Application"
+mainClassName = "example.micronaut.ApplicationKt"
 
+// use JUnit 5 platform
 test {
     useJUnitPlatform()
+}
+
+java {
+    sourceCompatibility = JavaVersion.toVersion('1.8')
 }
 
 allOpen {
     annotation("io.micronaut.aop.Around")
 }
-
 compileKotlin {
     kotlinOptions {
         jvmTarget = '1.8'
@@ -73,11 +65,18 @@ compileKotlin {
         javaParameters = true
     }
 }
-
 compileTestKotlin {
     kotlinOptions {
         jvmTarget = '1.8'
         javaParameters = true
+    }
+}
+kapt {
+    arguments {
+        arg("micronaut.processing.incremental", true)
+        arg("micronaut.processing.annotations", "example.micronaut.*")
+        arg("micronaut.processing.group", "example.micronaut")
+        arg("micronaut.processing.module", "complete")
     }
 }
 
@@ -85,5 +84,17 @@ shadowJar {
     mergeServiceFiles()
 }
 
-run.classpath += configurations.developmentOnly
-run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+tasks.withType(JavaExec) {
+    classpath += configurations.developmentOnly
+    jvmArgs('-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+    if (gradle.startParameter.continuous) {
+        systemProperties(
+            'micronaut.io.watch.restart':'true',
+            'micronaut.io.watch.enabled':'true',
+            "micronaut.io.watch.paths":"src/main"
+        )
+    }
+}
+
+
+

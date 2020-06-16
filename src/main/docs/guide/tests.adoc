@@ -1,11 +1,9 @@
-include::{commondir}/common-spek2.adoc[]
-
 Create a test which verifies that when you do a GET request to `/hello` you get `Hello World` as a response:
 
 [source,kotlin]
-.src/test/kotlin/example/micronaut/HelloControllerSpec.kt
+.src/test/kotlin/example/micronaut/HelloControllerTest.kt
 ----
-include::{sourceDir}/src/test/kotlin/example/micronaut/HelloControllerSpec.kt[]
+include::{sourceDir}/src/test/kotlin/example/micronaut/HelloControllerTest.kt[]
 ----
 
 <1> To run the application from a unit test you can use the http://docs.micronaut.io/snapshot/api/io/micronaut/runtime/server/EmbeddedServer.html[EmbeddedServer] interface
