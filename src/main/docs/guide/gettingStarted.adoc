@@ -1,3 +1,12 @@
-include::{commondir}/common-micronautonex.adoc[]
 
-In this guide we are going to create a Micronaut app written in Kotlin.
+### What is Micronaut?
+Micronaut is a JVM-based framework for building lightweight, modular applications. Developed by OCI, the same company that created Grails, Micronaut is the latest framework designed to make creating microservices quick and easy.
+
+### Benefits of Micronaut
+* builds its dependency injection data at compile time. 
+* it has first class support for reactive programming, for both clients and servers. 
+* It also provides support for creating AWS lambda functions
+* it is an excellent framework for developing cloud-native applications.
+* Installation is super easy
+
+include::{commondir}/common-micronautonex.adoc[]
